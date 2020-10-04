@@ -3,7 +3,7 @@ import { StyleSheet, FlatList, Image, Text } from 'react-native'
 import * as service from '../ServiceApi/service'
 
 const Home = () => {
-    const [getMovies, setMovies] = useState('')
+    const [getMovies, setMovies] = useState([])
     /*
         {(getMovies == null) == true && service.serviceRequest().then( obj =>
             setMovies(obj.results.poster_path)
@@ -17,12 +17,10 @@ const Home = () => {
     return(
         <>
             <FlatList
-                data={[getMovies]}
-                keyExtractor={({ id }, index) => id}
+                data={getMovies}
                 renderItem={({ item })=> (
-                <Text>{item.title}</Text>
-                )
-                }
+                    <Text>{item.title}</Text>
+                )}
             />
         </>
     )
