@@ -1,5 +1,5 @@
 import React from  'react'
-import { StyleSheet, FlatList } from 'react-native'
+import { StyleSheet, FlatList, Image } from 'react-native'
 import * as service from '../ServiceApi/service'
 
 const Home = () => {
@@ -8,7 +8,11 @@ const Home = () => {
         <>
             <FlatList
                 data={[movies]}
-                renderItem={()=> <></>}
+                renderItem={()=> 
+                    <Image
+                        uri={movies}
+                    />
+                }
             />
         </>
     )
