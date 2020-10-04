@@ -10,9 +10,10 @@ export const POPULAR_ENDPOINT = 'popular'
 
 export const serviceRequest = () =>{
     return fetch(`${BASE_URL}${POPULAR_ENDPOINT}?api_key=${TOKEN}&language=${DEFAULT_LANGUAGE}&page=${DEFAULT_PAGE}`)
-        .then((response) => response.json)
+        .then((response) => response.json())
         .then((json) => {
-            return json()
+            console.log(`serviceRequest: ${json.results}`)
+            return json
         })
         .catch((error) => {
             console.log(error)

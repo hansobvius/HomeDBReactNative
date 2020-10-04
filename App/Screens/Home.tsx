@@ -1,17 +1,27 @@
-import React from  'react'
-import { StyleSheet, FlatList, Image } from 'react-native'
+import React, { useState } from  'react'
+import { StyleSheet, FlatList, Image, Text } from 'react-native'
 import * as service from '../ServiceApi/service'
 
 const Home = () => {
-    const movies = service.serviceRequest()
+    const [getMovies, setMovies] = useState('')
+    /*
+        {(getMovies == null) == true && service.serviceRequest().then( obj =>
+            setMovies(obj.results.poster_path)
+        )}
+    */
+    service.serviceRequest().then( obj =>
+        setMovies(obj.results)
+    )
+
+    console.log(`movies is ${getMovies}`)
     return(
         <>
             <FlatList
-                data={[movies]}
-                renderItem={()=> 
-                    <Image
-                        uri={movies}
-                    />
+                data={[getMovies]}
+                keyExtractor={({ id }, index) => id}
+                renderItem={({ item })=> (
+                <Text>{item.title}</Text>
+                )
                 }
             />
         </>
