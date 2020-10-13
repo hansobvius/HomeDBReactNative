@@ -8,14 +8,13 @@ export const DEFAULT_PAGE = 1
 
 export const POPULAR_ENDPOINT = 'popular'
 
-export const serviceRequest = () =>{
-    return fetch(`${BASE_URL}${POPULAR_ENDPOINT}?api_key=${TOKEN}&language=${DEFAULT_LANGUAGE}&page=${DEFAULT_PAGE}`)
-        .then((response) => response.json())
-        .then((json) => {
-            console.log(`serviceRequest: ${json.results}`)
-            return json
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+export const serviceRequest = async () =>{
+    try {
+        const response = await fetch(`${BASE_URL}${POPULAR_ENDPOINT}?api_key=${TOKEN}&language=${DEFAULT_LANGUAGE}&page=${DEFAULT_PAGE}`)
+        const json = await response.json()
+        console.log(`serviceRequest: ${response.status}`)
+        return json
+    } catch (error) {
+        console.log(error)
+    }
 }

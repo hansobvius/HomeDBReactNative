@@ -4,23 +4,33 @@ import * as service from '../ServiceApi/service'
 
 const Home = () => {
     const [getMovies, setMovies] = useState([])
-    /*
-        {(getMovies == null) == true && service.serviceRequest().then( obj =>
-            setMovies(obj.results.poster_path)
-        )}
-    */
-    service.serviceRequest().then( obj =>
-        setMovies(obj.results)
-    )
 
-    console.log(`movies is ${getMovies}`)
+    useState(() => {
+        service.serviceRequest().then( obj =>
+            setMovies(obj.results)
+        )
+    })
+
+    const getImageUri = (path: String): String =>{
+        return `http://image.tmdb.org/t/p/w500/${path}` 
+    }
+ 
     return(
         <>
             <FlatList
                 data={getMovies}
                 renderItem={({ item })=> (
-                    <Text>{item.title}</Text>
+                    <Image 
+                    style={{
+                        width: 50,
+                        height: 50,
+                        margin: 10
+                    }}
+                    source={{
+                        uri: getImageUri(item.poster_path)
+                    }}/>
                 )}
+                horizontal
             />
         </>
     )
