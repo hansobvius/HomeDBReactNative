@@ -1,6 +1,7 @@
 import React, { useState } from  'react'
-import { StyleSheet, FlatList, Image, Text } from 'react-native'
+import { StyleSheet, FlatList, Image, Text, View } from 'react-native'
 import * as service from '../ServiceApi/service'
+import * as imageUtil from '../utils/ImageUtils'
 
 const Home = () => {
     const [getMovies, setMovies] = useState([])
@@ -11,24 +12,15 @@ const Home = () => {
         )
     })
 
-    const getImageUri = (path: String): String =>{
-        return `http://image.tmdb.org/t/p/w500/${path}` 
-    }
- 
     return(
         <>
+            <Text style={style.rowTitle}>Popular</Text>
             <FlatList
                 data={getMovies}
                 renderItem={({ item })=> (
-                    <Image 
-                    style={{
-                        width: 50,
-                        height: 50,
-                        margin: 10
-                    }}
-                    source={{
-                        uri: getImageUri(item.poster_path)
-                    }}/>
+                    <RowList
+                        image={item.poster_path}
+                    />
                 )}
                 horizontal
             />
@@ -36,17 +28,44 @@ const Home = () => {
     )
 }
 
-const rowList = () => {
+const RowList = ({ props }) => {
+    const[getImage, setImage] = useState(String)
+
+    useState(() =>{
+        setImage(props.image)
+    })
+
     return(
-        <>
-            <FlatList
-                data={[]}
-                renderItem={()=><></>}
+        <View style={style.imageContainer}>
+            <Image 
+                style={style.imageCard}
+                source={{
+                    uri: imageUtil.getImageUri(getImage)
+                }}
             />
-        </>
+        </View>
     )
 }
 
-const style = StyleSheet.create({})
+const style = StyleSheet.create({
+    component:{
+        flex: 4
+    },
+    row:{
+        flex: 2
+    },
+    rowTitle:{
+        margin: 5
+    },
+    imageContainer:{
+        alignSelf:'baseline'
+    },
+    imageCard:{
+        width: 50,
+        height: 50,
+        margin: 10,
+        alignItems: 'stretch'
+    }
+})
 
 export default Home
