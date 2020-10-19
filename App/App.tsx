@@ -5,7 +5,9 @@ import FlexExp from './Screens/FlexExp'
 
 const App = () => {
   return (
-    <> <Home/> </>
+    <> 
+      <Home/> 
+    </>
   );
 };
 

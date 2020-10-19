@@ -28,8 +28,8 @@ const Home = () => {
     )
 }
 
-const RowList = ({ props }) => {
-    const[getImage, setImage] = useState(String)
+const RowList = ( props ) => {
+    const[getImage, setImage] = useState('')
 
     useState(() =>{
         setImage(props.image)
