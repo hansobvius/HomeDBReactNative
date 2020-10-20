@@ -8,9 +8,9 @@ export const DEFAULT_PAGE = 1
 
 export const POPULAR_ENDPOINT = 'popular'
 
-export const serviceRequest = async () =>{
+export const serviceRequest = async (value: String) =>{
     try {
-        const response = await fetch(`${BASE_URL}${POPULAR_ENDPOINT}?api_key=${TOKEN}&language=${DEFAULT_LANGUAGE}&page=${DEFAULT_PAGE}`)
+        const response = await fetch(`${BASE_URL}${value}?api_key=${TOKEN}&language=${DEFAULT_LANGUAGE}&page=${DEFAULT_PAGE}`)
         const json = await response.json()
         console.log(`serviceRequest: ${response.status}`)
         return json

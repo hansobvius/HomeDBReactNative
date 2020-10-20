@@ -1,12 +1,12 @@
 export const urlModel = 
   [
     {
-      uri: 'https://api.themoviedb.org/3/movie/'
+      uri: 'popular'
     },
     {
-      uri: 'https://api.themoviedb.org/3/movie/'
+      uri: 'top_rated'
     },
     {
-      uri: 'https://api.themoviedb.org/3/movie/'
+      uri: 'upcoming'
     },
   ]
