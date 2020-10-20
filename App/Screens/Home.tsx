@@ -1,22 +1,37 @@
-import React, { useState } from  'react'
+import React, { Component, useState } from  'react'
 import { StyleSheet, FlatList, Image, Text, View } from 'react-native'
 import * as service from '../ServiceApi/service'
 import * as imageUtil from '../utils/ImageUtils'
+import * as model from '../models/ProjectModels'
 
 const Home = () => {
-    const [getMovies, setMovies] = useState([])
+    const [getMoviesList, setMoviesList] = useState([{}])
+    const [getMovies, setMovies] = useState({})
+
+    let urlList: [{}] = []
 
     useState(() => {
-        service.serviceRequest().then( obj =>
-            setMovies(obj.results)
+        model.urlModel.forEach( obj =>
+            service.serviceRequest().then( obj => {
+                console.log(`response obj: ${obj.results}`)
+                urlList.push(obj)
+                }
+            )
         )
+        setMoviesList(urlList)  
+
+        service.serviceRequest().then( obj => {
+            setMovies(obj)
+        })
     })
+
+    console.log(`DATA: ${getMoviesList[0].results[0].title}`)
 
     return(
         <>
             <Text style={style.rowTitle}>Popular</Text>
             <FlatList
-                data={getMovies}
+                data={getMoviesList[0].results}
                 renderItem={({ item })=> (
                     <RowList
                         image={item.poster_path}
