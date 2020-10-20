@@ -8,7 +8,7 @@ const Home = () => {
     const [getMoviesList, setMoviesList] = useState([{}])
     const [getMovies, setMovies] = useState({})
 
-    let urlList: [{}] = []
+    let urlList: [{}] = [{}]
 
     useState(() => {
         model.urlModel.forEach( obj =>
@@ -25,38 +25,43 @@ const Home = () => {
         })
     })
 
-    console.log(`DATA: ${getMoviesList[0].results[0].title}`)
+    //console.log(`DATA: ${getMoviesList[0].results}`)
 
     return(
         <>
             <Text style={style.rowTitle}>Popular</Text>
             <FlatList
-                data={getMoviesList[0].results}
+                data={getMoviesList}
                 renderItem={({ item })=> (
                     <RowList
-                        image={item.poster_path}
+                        list={item.results}
                     />
                 )}
-                horizontal
             />
         </>
     )
 }
 
 const RowList = ( props ) => {
-    const[getImage, setImage] = useState('')
+    const[getList, setList] = useState({})
 
     useState(() =>{
-        setImage(props.image)
+        setList(props.list)
     })
 
     return(
         <View style={style.imageContainer}>
-            <Image 
-                style={style.imageCard}
-                source={{
-                    uri: imageUtil.getImageUri(getImage)
-                }}
+            <FlatList
+                data={getList}
+                renderItem={({ item })=> (
+                    <Image 
+                        style={style.imageCard}
+                        source={{
+                            uri: imageUtil.getImageUri(item.poster_path)
+                        }}
+                    />
+                )}
+                horizontal
             />
         </View>
     )
@@ -73,7 +78,7 @@ const style = StyleSheet.create({
         margin: 5
     },
     imageContainer:{
-        alignSelf:'baseline'
+        
     },
     imageCard:{
         width: 50,
