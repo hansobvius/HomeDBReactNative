@@ -6,7 +6,6 @@ import * as model from '../models/ProjectModels'
 
 const Home = () => {
     const [getMoviesList, setMoviesList] = useState([{}])
-    const [getMovies, setMovies] = useState({})
 
     let urlList: [{}] = [{}]
 
@@ -19,23 +18,23 @@ const Home = () => {
             )
         )
         setMoviesList(urlList)  
-
-        service.serviceRequest().then( obj => {
-            setMovies(obj)
-        })
     })
-
-    //console.log(`DATA: ${getMoviesList[0].results}`)
 
     return(
         <>
-            <Text style={style.rowTitle}>Popular</Text>
             <FlatList
                 data={getMoviesList}
                 renderItem={({ item })=> (
-                    <RowList
-                        list={item.results}
-                    />
+                    <View>
+                        {item.results != null &&
+                         <View>
+                            <Text style={style.rowTitle}>Popular</Text>                      
+                            <RowList
+                                list={item.results}
+                            />
+                         </View>
+                        }
+                    </View>
                 )}
             />
         </>
@@ -51,15 +50,18 @@ const RowList = ( props ) => {
 
     return(
         <View style={style.imageContainer}>
+            
             <FlatList
                 data={getList}
                 renderItem={({ item })=> (
-                    <Image 
-                        style={style.imageCard}
-                        source={{
-                            uri: imageUtil.getImageUri(item.poster_path)
-                        }}
-                    />
+                    <View>
+                        <Image 
+                            style={style.imageCard}
+                            source={{
+                                uri: imageUtil.getImageUri(item.poster_path)
+                            }}
+                        />
+                    </View>
                 )}
                 horizontal
             />
