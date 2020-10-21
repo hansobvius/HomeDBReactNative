@@ -8,5 +8,5 @@ export const urlModel =
     },
     {
       uri: 'upcoming'
-    },
+    }
   ]
