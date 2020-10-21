@@ -1,7 +1,6 @@
 import React, { Component, useState } from  'react'
 import { StyleSheet, FlatList, Image, Text, View, ScrollView } from 'react-native'
 import * as service from '../../ServiceApi/service'
-import * as imageUtil from '../../utils/ImageUtils'
 import * as model from '../../models/ProjectModels'
 import HeaderContainer from './container/HeaderContainer'
 import RowList from './container/RowList'
