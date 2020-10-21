@@ -1,12 +1,13 @@
 import React from 'react';
-import { Text } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
 import Home from './Screens/home/Home'
-import FlexExp from './Screens/FlexExp'
 
 const App = () => {
   return (
     <> 
-      <Home/> 
+      <NavigationContainer>
+        <Home/> 
+      </NavigationContainer>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { Component, useState } from  'react'
+import React, { Component, useEffect, useState } from  'react'
 import { StyleSheet, FlatList, Image, Text, View, ScrollView } from 'react-native'
 import * as service from '../../ServiceApi/service'
 import * as model from '../../models/ProjectModels'
@@ -7,36 +7,31 @@ import RowList from './container/RowList'
 import style from './style/HomeStyle'
 
 const Home = () => {
-  const[getMoviesList, setMoviesList] = useState([{}])
+  const[movieList, setMoviesList] = useState([])
   const[getTitle, setTitle] = useState([''])
 
-  let titleList: [''] = ['']
-  let urlList: [{}] = [{}]
+  let urlList = []
 
-  useState(() => {
+  useEffect(() => {
     model.urlModel.forEach( value => {
       service.serviceRequest(value.uri).then( obj => {
         console.log(`response obj: ${obj.results}`)
         urlList.push(obj)
+        setMoviesList(urlList)
       })
-    })
-    setMoviesList(urlList)  
-  })
-
-  console.log(`DATA: ${getMoviesList.length}`)
-
-  console.log('Done')
+    })    
+  }, [])
 
   return(
     <>
       <View>
-        {getMoviesList.length > 0 && 
+        {movieList.length > 0 && 
           <ScrollView>
           <HeaderContainer
-            img={getMoviesList[1].results[0].poster_path}
+            img={movieList[0].results[0].poster_path}
           />
           <FlatList
-            data={getMoviesList}
+            data={movieList}
             renderItem={({ item })=> (
               <View>
                 {item.results != null &&

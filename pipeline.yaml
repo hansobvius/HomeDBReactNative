@@ -1,0 +1,226 @@
+# Pipeline para deploy Android
+
+#targets from Gradle
+parameters:
+- name: buildtarget
+  displayName: build target
+  type: string
+  default: ctgbrasil
+  values:
+    - aegea
+    - ctgbrasil
+    - credz
+    - cassi
+    - oxiteno
+    - porto-seguro-socorro
+    - electrolux
+    - agropalma
+    - cielo
+    - teixeiraduarte
+    - cip
+    - extrafarma
+    - raiadrogasil
+    - dasa
+    - randon
+    - takeda
+    - unibb
+    - unibbfamilia
+    - uniuol
+    - ipirangacolaboradores
+    - simpress
+    - previ
+
+  #keystore para o Gradle
+- name: keystoreAlias
+  displayName: key storeAlias
+  type: string
+  default: ctgbrasil
+  values:
+    - aegea
+    - ctgbrasil
+    - credz
+    - oxiteno
+    - oxiteno
+    - portosegurosocorro
+    - electrolux
+    - agropalma
+    - universidadecielo
+    - teixeiraduarte
+    - cip
+    - extrafarma
+    - portaldosaber
+    - dasa
+    - randon
+    - takeda
+    - unibbmobile
+    - unibbfamilia
+    - uniuol
+    - ipiranga
+    - simpress
+    - previ
+
+#Variavel para direcionar o destino do apk através do appcenter por branch e para definição do destinationId por target
+variables:
+  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+    appcenterDestination: 'store'
+  ${{ if eq(variables['Build.SourceBranchName'], 'feature/azure_appcenter') }}:
+    appcenterDestination: 'groups'
+
+  ${{ if eq('${{ parameters.buildtarget }}', 'previ') }}:
+    destinationId: e36fd792-0eeb-4cda-9396-4360414c31e9
+  ${{ if eq('${{ parameters.buildtarget }}', 'ctgbrasil') }}:
+    destinationId: bb924ddc-d982-477c-9651-1ca2f755e636  
+
+#realiza clone dos repositorios 
+resources:
+  repositories:
+    - repository: 'atena-md-android-core'
+      type: git
+      target: master
+      name: atena-md-android-core
+      ref: master
+
+    - repository: 'android-base-arch-lib'
+      type: git
+      ref: master
+      name: android-base-arch-lib
+
+    - repository: 'atena-md-android-security'
+      type: git
+      ref: master
+      name: atena-md-android-security 
+
+#usa imagem mac por conta da dependencia do fastalane
+pool:
+  vmImage: 'macos-latest'
+
+#Evento que dispara pipeline
+trigger:
+- feature/azure_appcenter
+- master
+
+jobs:
+  - job: buildAPK
+    #clone os codigod fontes junto com os submodulos
+    steps:
+      - checkout: self
+        submodules: true
+        clean: true
+      - checkout: atena-md-android-core
+        clean: true
+      - checkout: android-base-arch-lib
+        clean: true
+      - checkout: atena-md-android-security
+        clean: true
+
+      - script: echo 'target ${{ parameters.buildtarget }}'
+      - script: echo 'keystorealias ${{ parameters.keystoreAlias }}'
+
+      - task: CmdLine@2
+        displayName: lista pasta atena-md-android
+        inputs:
+          script: 'ls $(Build.SourcesDirectory)/atena-md-android/'
+
+      #instala plugin de terceiros para incrementar versão, o versioncode no gradle
+      - task: CmdLine@2
+        displayName: instala plugin fastalane que incrementa versão no gradle
+        inputs:
+          script: 'fastlane add_plugin increment_version_code'
+          workingDirectory: '$(Build.SourcesDirectory)/atena-md-android/'
+
+      #incrementar o versioncode no gradle
+      - task: CmdLine@2
+        displayName: executa plugin fastalane que incrementa versão no gradle
+        inputs:
+          script: 'fastlane incversion modulo:${{parameters.buildtarget}}'
+          workingDirectory: '$(Build.SourcesDirectory)/atena-md-android/'
+
+      - task: CmdLine@2
+        inputs:
+          script: 'ls'
+
+      - task: CmdLine@2
+        inputs:
+          script: 'ls $(Build.SourcesDirectory)/atena-md-android/'
+
+      - task: CmdLine@2
+        inputs:
+          script: 'git status'
+          workingDirectory: '$(Build.SourcesDirectory)/atena-md-android/'
+
+      #roda o gradle com parametro build e usando o builgtarget como parametro
+      - task: Gradle@2
+        displayName: Rodando gradle build
+        inputs:
+          gradleWrapperFile: '$(Build.SourcesDirectory)/atena-md-android/gradlew'
+          workingDirectory: '$(Build.SourcesDirectory)/atena-md-android/'
+          publishJUnitResults: false
+          tasks: ':${{ parameters.buildtarget }}:assembleRelease'
+        ##  options: '--build-cache'
+          gradleOptions: '-Xmx6144m'
+          javaHomeOption: 'JDKVersion'
+          jdkVersionOption: '1.8'
+          jdkArchitectureOption: 'x64'
+          sonarQubeRunAnalysis: false
+
+      #assina o apk usando o keystore que vem via parametro keystoreAlias e a senha fixa
+      - task: AndroidSigning@3
+        displayName: Assinando APK
+        inputs:
+          apkFiles: '**/*.apk'
+          apksign: true
+          apksignerKeystoreFile: 'signing.keystore'
+          apksignerKeystorePassword: '$(storePassword)'
+          apksignerKeystoreAlias: '${{ parameters.keystoreAlias }}'
+          apksignerKeyPassword: '$(storePassword)'
+          zipalign: false
+
+      - task: AppCenterTest@1
+        displayName: 'Espresso Test - Synchronous'
+        inputs:
+          appFile: 'Espresso/espresso-app.apk'
+          artifactsDirectory: '$(Build.ArtifactStagingDirectory)/AppCenterTest'
+          frameworkOption: espresso
+          espressoBuildDirectory: Espresso
+          serverEndpoint: 'AppCenter UolEdtech'
+          appSlug: 'xplatbg1/EspressoTests'
+          devices: a84c93af
+
+
+      #Task para distribuição do apk realizado pelo AppCenter
+      - task: AppCenterDistribute@3
+        inputs:
+          serverEndpoint: 'AppCenter UolEdtech'
+          appSlug: 'uoledtech/CTG-Brasil'
+          appFile: '$(Build.SourcesDirectory)/atena-md-android/*/build/outputs/apk/prod/release/*.apk'
+          buildVersion: '10'
+          releaseNotesInput: 'Melhorias de Funcionamento e Atualizações Diversas'
+          symbolsOption: 'Android'
+          releaseNotesOption: 'input'
+          destinationType: '${{ variables.appcenterDestination }}'
+          distributionGroupId: 'e36fd792-0eeb-4cda-9396-4360414c31e9'
+      
+      #envia release para um dos tracks definidos no campo track realizando o deploy no google play 
+      #- task: GooglePlayRelease@3
+      #  displayName: Enviando para Google play store
+      #  inputs:
+      #    serviceConnection: 'pipeline_android_atena'
+      #    apkFile: '$(Build.SourcesDirectory)/atena-md-android/**/*.apk'
+      #    track: 'production'
+      #    changeLogFile: '$(Build.SourcesDirectory)/atena-md-android/deploy-notes.txt'
+
+  #todo fazer o commit após rodar
+  #    - task: CmdLine@2
+  #      inputs:
+  #        script: 'git push origin azure-pipelines-atena-md'
+  #        workingDirectory: '$(Build.SourcesDirectory)/atena-md-android/'
+
+  # condição de erro, caso o pipeline falhe
+  - job: buildError
+    dependsOn: buildAPK
+    condition: failed() # this job will only run if Foo fails
+
+    steps:
+      - task: CmdLine@2
+        inputs:
+          script: 'echo "não foi possivel executar este job" '

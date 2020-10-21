@@ -11,9 +11,8 @@ export const POPULAR_ENDPOINT = 'popular'
 export const serviceRequest = async (value: String) =>{
     try {
         const response = await fetch(`${BASE_URL}${value}?api_key=${TOKEN}&language=${DEFAULT_LANGUAGE}&page=${DEFAULT_PAGE}`)
-        const json = await response.json()
         console.log(`serviceRequest: ${response.status}`)
-        return json
+        return response.json()
     } catch (error) {
         console.log(error)
     }

@@ -5,9 +5,11 @@ import * as imageUtil from '../../../utils/ImageUtils'
 
 const HeaderContainer = (props) => {
   const[getValue, setValue] = useState('')
+
   useState(() => {
       setValue(props.img)
   })
+  
   return(
       <View style={style.headerContainer}>
          <Image 
