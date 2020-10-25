@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { View, Text } from 'react-native'
 import * as service from '../../ServiceApi/service'
 
-const Detail = ({ id }) => {
+const Detail = ({ route }) => {
   const[getDetailMovie, setDetailMovie] = useState({})
+  const { itemId } = route.params
 
   useState(() => {
-    service.serviceRequest(id).then(obj => {
+    service.serviceRequest(itemId).then(obj => {
       setDetailMovie(obj)
     })
   })
@@ -14,7 +15,7 @@ const Detail = ({ id }) => {
   return(
     <>
       <View>
-        <Text>The id is {getDetailMovie.id}</Text>
+        <Text>The title is {getDetailMovie.title}</Text>
       </View>
     </>
   )

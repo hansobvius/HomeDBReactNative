@@ -6,7 +6,7 @@ import HeaderContainer from './container/HeaderContainer'
 import RowList from './container/RowList'
 import style from './style/HomeStyle'
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const[movieList, setMoviesList] = useState([])
   const[getTitle, setTitle] = useState([''])
 
@@ -38,6 +38,7 @@ const Home = () => {
                   <View>
                     <Text style={getTitle.length > 1 ? style.rowTitle : null}>{getTitle}</Text>                      
                     <RowList
+                      navigation={navigation}
                       list={item.results}
                     />
                   </View>

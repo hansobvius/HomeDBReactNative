@@ -3,11 +3,11 @@ import { View, FlatList, Image, TouchableNativeFeedback, ToastAndroid } from 're
 import style from '../style/HomeStyle'
 import * as imageUtil from '../../../utils/ImageUtils'
 
-const RowList = ( props ) => {
+const RowList = ({ list, navigation }) => {
   const[getList, setList] = useState({})
 
   useState(() =>{
-      setList(props.list)
+      setList(list)
   })
 
   return(
@@ -18,7 +18,9 @@ const RowList = ( props ) => {
                   <View>
                       <TouchableNativeFeedback
                         onPress={() => {
-                            ToastAndroid.show(`${item.title}`, ToastAndroid.SHORT)
+                            navigation.navigate('Detail', { 
+                                itemId: item.id
+                            })
                         }}
                       >
                         <Image 
