@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
 import * as service from '../../ServiceApi/service'
+import * as imageUtil from '../../utils/ImageUtils'
+import style from './style/DetailStyle'
 
-const Detail = ({ id }) => {
+const Detail = ({ route }) => {
   const[getDetailMovie, setDetailMovie] = useState({})
+  const { itemId } = route.params
 
   useState(() => {
-    service.serviceRequest(id).then(obj => {
+    service.serviceRequest(itemId).then(obj => {
       setDetailMovie(obj)
     })
   })
@@ -14,7 +17,16 @@ const Detail = ({ id }) => {
   return(
     <>
       <View>
-        <Text>The id is {getDetailMovie.id}</Text>
+        <Image
+          style={style.imgHeader}
+          source={{
+              uri: imageUtil.getImageUri(getDetailMovie.poster_path)
+          }}
+        />
+        <Text style={style.title}>{getDetailMovie.title}</Text>
+        <Text 
+          style={style.overview}
+        >{getDetailMovie.overview}</Text>
       </View>
     </>
   )

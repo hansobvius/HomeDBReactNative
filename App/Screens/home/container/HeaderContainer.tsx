@@ -17,7 +17,7 @@ const HeaderContainer = (props) => {
               source={{
                   uri: imageUtil.getImageUri(getValue)
               }}
-          />
+            />
       </View>
   )
 }

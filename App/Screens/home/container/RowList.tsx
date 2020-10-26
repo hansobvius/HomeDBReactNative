@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import { View, FlatList, Image } from 'react-native'
+import { View, FlatList, Image, TouchableNativeFeedback, ToastAndroid } from 'react-native'
 import style from '../style/HomeStyle'
 import * as imageUtil from '../../../utils/ImageUtils'
 
-const RowList = ( props ) => {
+const RowList = ({ list, navigation }) => {
   const[getList, setList] = useState({})
 
   useState(() =>{
-      setList(props.list)
+      setList(list)
   })
 
   return(
@@ -16,12 +16,20 @@ const RowList = ( props ) => {
               data={getList}
               renderItem={({ item })=> (
                   <View>
-                      <Image 
-                          style={style.imageCard}
-                          source={{
-                              uri: imageUtil.getImageUri(item.poster_path)
-                          }}
-                      />
+                      <TouchableNativeFeedback
+                        onPress={() => {
+                            navigation.navigate('Detail', { 
+                                itemId: item.id
+                            })
+                        }}
+                      >
+                        <Image 
+                            style={style.imageCard}
+                            source={{
+                                uri: imageUtil.getImageUri(item.poster_path)
+                            }}
+                        />
+                      </TouchableNativeFeedback>
                   </View>
               )}
               horizontal
