@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text } from 'react-native'
-import HeaderContainer from '../home/container/HeaderContainer'
+import { View, Text, Image } from 'react-native'
 import * as service from '../../ServiceApi/service'
+import * as imageUtil from '../../utils/ImageUtils'
 import style from './style/DetailStyle'
 
 const Detail = ({ route }) => {
@@ -17,8 +17,11 @@ const Detail = ({ route }) => {
   return(
     <>
       <View>
-        <HeaderContainer
-          img={getDetailMovie.poster_path}
+        <Image
+          style={style.imgHeader}
+          source={{
+              uri: imageUtil.getImageUri(getDetailMovie.poster_path)
+          }}
         />
         <Text style={style.title}>{getDetailMovie.title}</Text>
         <Text 
