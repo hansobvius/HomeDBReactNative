@@ -1,12 +1,26 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+import { useOvermind } from './index';
 
 const Content = () => {
-  return(
+  const {state, actions} = useOvermind();
+  return (
     <View>
-      <Text>Helo Overmind</Text>
+      <Button title="Increment" onPress={() => actions.increment(1)}></Button>
+      <View>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: '600',
+            padding: 8,
+            textAlign: 'center',
+          }}>
+          {state.counter.toString()}
+        </Text>
+      </View>
+      <Button title="Decrement" onPress={() => actions.decrement(1)}></Button>
     </View>
-  )
+  );
 }
 
 export default Content

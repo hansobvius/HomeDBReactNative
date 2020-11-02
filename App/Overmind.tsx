@@ -5,9 +5,7 @@ import { Provider } from 'overmind-react'
 import { createOvermind } from 'overmind'
 import { config } from "./Overmind/index";
 
-const overmind = createOvermind(config, {
-  devtools: "localhost:8081"
-});
+const overmind = createOvermind(config);
 
 const Overmind = (props: any) => {
   return(
