@@ -3,4 +3,4 @@ import App from './App/App';
 import Overmind from './App/Overmind';
 import {name as appName} from './app.json';
 
-AppRegistry.registerComponent(appName, () => Overmind);
+AppRegistry.registerComponent(appName, () => App);

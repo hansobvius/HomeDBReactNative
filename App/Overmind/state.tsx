@@ -1,3 +1,4 @@
+/*
 type State = {
   counter: number;
 };
@@ -5,3 +6,12 @@ type State = {
 export const state: State = {
   counter: 0,
 };
+*/
+
+type State = {
+  movies: {}
+}
+
+export const state: State = {
+  movies: {}
+}

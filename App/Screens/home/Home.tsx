@@ -5,6 +5,11 @@ import * as model from '../../models/ProjectModels'
 import HeaderContainer from './container/HeaderContainer'
 import RowList from './container/RowList'
 import style from './style/HomeStyle'
+import { Provider } from 'overmind-react'
+import { createOvermind } from 'overmind'
+import { config } from "../../Overmind/index";
+
+const overmind = createOvermind(config);
 
 const Home = ({ navigation }) => {
   const[movieList, setMoviesList] = useState([])
@@ -23,7 +28,7 @@ const Home = ({ navigation }) => {
   }, [])
 
   return(
-    <>
+    <Provider value={overmind}>
       <View>
         {movieList.length > 0 && 
           <ScrollView>
@@ -49,7 +54,7 @@ const Home = ({ navigation }) => {
           </ScrollView>
         }
       </View>
-    </>
+    </Provider>
   )
 }
 
