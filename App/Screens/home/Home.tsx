@@ -7,22 +7,24 @@ import RowList from './container/RowList'
 import style from './style/HomeStyle'
 import { Provider } from 'overmind-react'
 import { createOvermind } from 'overmind'
-import { config } from "../../Overmind/index";
+import { config } from "../../overmind/index"
+import { useOvermind } from '../../overmind/index'
 
 const overmind = createOvermind(config);
 
 const Home = ({ navigation }) => {
-  const[movieList, setMoviesList] = useState([])
   const[getTitle, setTitle] = useState([''])
 
-  let urlList = []
+  const {state, actions} = useOvermind();
+
+  let urlList:any = []
 
   useEffect(() => {
     model.urlModel.forEach( value => {
       service.serviceRequest(value.uri).then( obj => {
         console.log(`response obj: ${obj.results}`)
         urlList.push(obj)
-        setMoviesList(urlList)
+        actions.inject(urlList)
       })
     })    
   }, [])
@@ -30,13 +32,13 @@ const Home = ({ navigation }) => {
   return(
     <Provider value={overmind}>
       <View>
-        {movieList.length > 0 && 
+        {state.movies.length > 0 && 
           <ScrollView>
           <HeaderContainer
-            img={movieList[0].results[0].poster_path}
+            img={state.movies[0].results[0].poster_path}
           />
           <FlatList
-            data={movieList}
+            data={state.movies}
             renderItem={({ item })=> (
               <View>
                 {item.results != null &&
