@@ -7,8 +7,8 @@ import RowList from './container/RowList'
 import style from './style/HomeStyle'
 import { Provider } from 'overmind-react'
 import { createOvermind } from 'overmind'
-import { config } from "../../overmind/index"
-import { useOvermind } from '../../overmind/index'
+import { config } from "../../Overmind/index"
+import { useOvermind } from '../../Overmind/index'
 
 const overmind = createOvermind(config);
 

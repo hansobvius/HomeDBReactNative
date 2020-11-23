@@ -6,7 +6,7 @@ import Home from './Screens/home/Home'
 import Detail from './Screens/detail/Detail'
 import { Provider } from 'overmind-react'
 import { createOvermind } from 'overmind'
-import { config } from "./overmind/index"
+import { config } from "./Overmind/index"
 
 const stack = createStackNavigator()
 
